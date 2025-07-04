@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 )
 
 func main() {
@@ -26,6 +27,10 @@ func main() {
 	cntxt := context.Background()
 
 	openAIClient := agents.NewOpenAPI(cntxt, *openAPIKey, nil)
-	agents.NewAgent(cntxt, openAIClient, *outputDir, *basePackage, *workerCount)
-	fmt.Println("READY")
+	ag := agents.NewAgent(cntxt, openAIClient, *outputDir, *basePackage, *workerCount)
+	ag.Start()
+	ag.SendFileTask("main.go", "package main\n\n")
+	time.Sleep(2 * time.Second)
+	ag.Stop()
+
 }
